@@ -1,68 +1,81 @@
-import React, { useState } from 'react';
-import { LoginForm } from './components/LoginForm';
-import { RecoverPassword } from './components/RecoverPassword';
-import { DashboardLayout } from './components/DashboardLayout';
-import { Dashboard } from './components/Dashboard';
-import { PlaceholderView } from './components/PlaceholderView';
-import { Pacientes } from './components/Pacientes';
-import { ExpedientePaciente } from './components/ExpedientePaciente';
-import { Agenda } from './components/Agenda';
-import { Servicios } from './components/Servicios';
-import { Inventario } from './components/Inventario';
-import { Cotizaciones } from './components/Cotizaciones';
-import { Ventas } from './components/Ventas';
-import { Finanzas } from './components/Finanzas';
-import { Comisiones } from './components/Comisiones';
-import { Reportes } from './components/Reportes';
-import { Configuracion } from './components/Configuracion';
-import { ImageWithFallback } from './components/figma/ImageWithFallback';
-import bioPlasmaLogo from 'figma:asset/175af98dc3b4599e36e3eb47be9bf1f4fb2a405b.png';
+import React, { useState } from "react";
+import { PlaceholderView } from "./components/legacy/PlaceholderView";
+import { ImageWithFallback } from "./components/figma/ImageWithFallback";
+import bioPlasmaLogo from "figma:asset/175af98dc3b4599e36e3eb47be9bf1f4fb2a405b.png";
+import { LoginForm } from "./modules/auth/pages/LoginForm";
+import { RecoverPassword } from "./modules/auth/pages/RecoverPassword";
+import { Dashboard } from "./modules/dashboard/pages/Dashboard";
+import { Configuracion } from "./modules/settings/pages/Configuracion";
+import { Pacientes } from "./modules/patients/pages/Pacientes";
+import { Agenda } from "./modules/appointments/pages/Agenda";
+import { Servicios } from "./modules/services/pages/Servicios";
+import { Inventario } from "./modules/inventory/pages/Inventario";
+import { Cotizaciones } from "./modules/quotation/pages/Cotizaciones";
+import { Ventas } from "./modules/sales/pages/Ventas";
+import { Finanzas } from "./modules/finance/pages/Finanzas";
+import { Comisiones } from "./modules/commissions/pages/Comisiones";
+import { Reportes } from "./modules/reports/pages/Reportes";
+import { ExpedientePaciente } from "./modules/patients/components/ExpedientePaciente";
+import { DashboardLayout } from "./components/layouts/DashboardLayout";
 
-type ViewType = 'dashboard' | 'pacientes' | 'agenda' | 'servicios' | 'inventario' | 'cotizaciones' | 'ventas' | 'finanzas' | 'comisiones' | 'reportes' | 'configuracion';
+type ViewType =
+  | "dashboard"
+  | "pacientes"
+  | "agenda"
+  | "servicios"
+  | "inventario"
+  | "cotizaciones"
+  | "ventas"
+  | "finanzas"
+  | "comisiones"
+  | "reportes"
+  | "configuracion";
 
 export default function App() {
-  const [loginView, setLoginView] = useState<'login' | 'recover'>('login');
+  const [loginView, setLoginView] = useState<"login" | "recover">("login");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [currentView, setCurrentView] = useState<ViewType>('dashboard');
-  const [userRole, setUserRole] = useState<'admin' | 'receptionist'>('admin');
-  const [selectedPacienteId, setSelectedPacienteId] = useState<string | null>(null);
+  const [currentView, setCurrentView] = useState<ViewType>("dashboard");
+  const [userRole, setUserRole] = useState<"admin" | "receptionist">("admin");
+  const [selectedPacienteId, setSelectedPacienteId] = useState<string | null>(
+    null,
+  );
 
   const handleLoginSuccess = () => {
     setIsAuthenticated(true);
-    setCurrentView('dashboard');
+    setCurrentView("dashboard");
   };
 
   const handleLogout = () => {
     setIsAuthenticated(false);
-    setLoginView('login');
-    setCurrentView('dashboard');
+    setLoginView("login");
+    setCurrentView("dashboard");
     setSelectedPacienteId(null);
   };
 
   const getPageTitle = () => {
     const titles: Record<ViewType, string> = {
-      dashboard: 'Dashboard',
-      pacientes: 'Pacientes',
-      agenda: 'Agenda y Citas',
-      servicios: 'Servicios',
-      inventario: 'Inventario',
-      cotizaciones: 'Cotizaciones',
-      ventas: 'Ventas',
-      finanzas: 'Finanzas',
-      comisiones: 'Comisiones',
-      reportes: 'Reportes',
-      configuracion: 'Configuración',
+      dashboard: "Dashboard",
+      pacientes: "Pacientes",
+      agenda: "Agenda y Citas",
+      servicios: "Servicios",
+      inventario: "Inventario",
+      cotizaciones: "Cotizaciones",
+      ventas: "Ventas",
+      finanzas: "Finanzas",
+      comisiones: "Comisiones",
+      reportes: "Reportes",
+      configuracion: "Configuración",
     };
     return titles[currentView];
   };
 
   const renderContent = () => {
-    const userName = userRole === 'admin' ? 'Dra. Mayra' : 'María';
+    const userName = userRole === "admin" ? "Dra. Mayra" : "María";
 
     switch (currentView) {
-      case 'dashboard':
+      case "dashboard":
         return <Dashboard userName={userName} />;
-      case 'pacientes':
+      case "pacientes":
         if (selectedPacienteId) {
           return (
             <ExpedientePaciente
@@ -76,23 +89,23 @@ export default function App() {
             onNavigateToExpediente={(id) => setSelectedPacienteId(id)}
           />
         );
-      case 'agenda':
+      case "agenda":
         return <Agenda />;
-      case 'servicios':
+      case "servicios":
         return <Servicios />;
-      case 'inventario':
+      case "inventario":
         return <Inventario />;
-      case 'cotizaciones':
+      case "cotizaciones":
         return <Cotizaciones />;
-      case 'ventas':
+      case "ventas":
         return <Ventas />;
-      case 'finanzas':
+      case "finanzas":
         return <Finanzas />;
-      case 'comisiones':
+      case "comisiones":
         return <Comisiones />;
-      case 'reportes':
+      case "reportes":
         return <Reportes />;
-      case 'configuracion':
+      case "configuracion":
         return <Configuracion />;
       default:
         return <Dashboard userName={userName} />;
@@ -130,9 +143,30 @@ export default function App() {
         <div className="absolute inset-0 opacity-5">
           <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
             <defs>
-              <pattern id="pattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
-                <circle cx="50" cy="50" r="30" fill="none" stroke="#D49494" strokeWidth="0.5" />
-                <circle cx="50" cy="50" r="20" fill="none" stroke="#E8A6A6" strokeWidth="0.5" />
+              <pattern
+                id="pattern"
+                x="0"
+                y="0"
+                width="100"
+                height="100"
+                patternUnits="userSpaceOnUse"
+              >
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="30"
+                  fill="none"
+                  stroke="#D49494"
+                  strokeWidth="0.5"
+                />
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="20"
+                  fill="none"
+                  stroke="#E8A6A6"
+                  strokeWidth="0.5"
+                />
               </pattern>
             </defs>
             <rect width="100%" height="100%" fill="url(#pattern)" />
@@ -171,13 +205,13 @@ export default function App() {
           </div>
 
           {/* Formularios */}
-          {loginView === 'login' ? (
+          {loginView === "login" ? (
             <LoginForm
-              onSwitchToRecover={() => setLoginView('recover')}
+              onSwitchToRecover={() => setLoginView("recover")}
               onLoginSuccess={handleLoginSuccess}
             />
           ) : (
-            <RecoverPassword onBack={() => setLoginView('login')} />
+            <RecoverPassword onBack={() => setLoginView("login")} />
           )}
         </div>
       </div>

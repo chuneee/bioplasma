@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
-import { Sidebar } from './Sidebar';
-import { Header } from './Header';
-import { X } from 'lucide-react';
+import React, { useState } from "react";
+
+import { X } from "lucide-react";
+import { Sidebar } from "./Sidebar";
+import { Header } from "./Header";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
   currentView: string;
   onNavigate: (view: string) => void;
-  userRole: 'admin' | 'receptionist';
+  userRole: "admin" | "receptionist";
   pageTitle: string;
   breadcrumb?: string[];
   onLogout: () => void;
@@ -20,7 +21,7 @@ export function DashboardLayout({
   userRole,
   pageTitle,
   breadcrumb,
-  onLogout
+  onLogout,
 }: DashboardLayoutProps) {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
@@ -58,7 +59,7 @@ export function DashboardLayout({
                 <X size={20} strokeWidth={1.5} />
               </button>
             </div>
-            
+
             <Sidebar
               isCollapsed={false}
               onToggleCollapse={() => {}}
@@ -75,9 +76,9 @@ export function DashboardLayout({
       )}
 
       {/* Main Content Area */}
-      <div 
+      <div
         className={`flex flex-col min-h-screen transition-all duration-300 ${
-          isSidebarCollapsed ? 'lg:ml-[72px]' : 'lg:ml-[260px]'
+          isSidebarCollapsed ? "lg:ml-[72px]" : "lg:ml-[260px]"
         }`}
       >
         <Header
@@ -88,9 +89,7 @@ export function DashboardLayout({
         />
 
         {/* Content */}
-        <main className="flex-1">
-          {children}
-        </main>
+        <main className="flex-1">{children}</main>
       </div>
     </div>
   );
