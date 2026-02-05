@@ -3,24 +3,25 @@ import React, { useState } from "react";
 import { X } from "lucide-react";
 import { Sidebar } from "./Sidebar";
 import { Header } from "./Header";
+import { AuthUser } from "../../modules/auth/types/auth.type";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
   currentView: string;
   onNavigate: (view: string) => void;
-  userRole: "admin" | "receptionist";
   pageTitle: string;
   breadcrumb?: string[];
   onLogout: () => void;
+  authUser: AuthUser;
 }
 
 export function DashboardLayout({
   children,
   currentView,
   onNavigate,
-  userRole,
   pageTitle,
   breadcrumb,
+  authUser,
   onLogout,
 }: DashboardLayoutProps) {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -34,8 +35,8 @@ export function DashboardLayout({
           isCollapsed={isSidebarCollapsed}
           onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
           currentView={currentView}
+          authUser={authUser}
           onNavigate={onNavigate}
-          userRole={userRole}
           onLogout={onLogout}
         />
       </div>
@@ -64,11 +65,11 @@ export function DashboardLayout({
               isCollapsed={false}
               onToggleCollapse={() => {}}
               currentView={currentView}
+              authUser={authUser}
               onNavigate={(view) => {
                 onNavigate(view);
                 setIsMobileSidebarOpen(false);
               }}
-              userRole={userRole}
               onLogout={onLogout}
             />
           </div>

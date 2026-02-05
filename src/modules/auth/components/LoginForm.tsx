@@ -1,36 +1,52 @@
-import React, { useState } from 'react';
-import { Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
+import React, { useState } from "react";
+import { Mail, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
+
+import { AuthService } from "../services/auth.service";
+import { useAuth } from "../hooks/useAuth";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface LoginFormProps {
   onSwitchToRecover: () => void;
-  onLoginSuccess: () => void;
 }
 
-export function LoginForm({ onSwitchToRecover, onLoginSuccess }: LoginFormProps) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+export function LoginForm({ onSwitchToRecover }: LoginFormProps) {
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const from = (location.state as any)?.from?.pathname || "/dashboard";
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string; general?: string }>({});
+  const [errors, setErrors] = useState<{
+    email?: string;
+    password?: string;
+    general?: string;
+  }>({});
   const [isLoading, setIsLoading] = useState(false);
-  const [touched, setTouched] = useState<{ email?: boolean; password?: boolean }>({});
+  const [touched, setTouched] = useState<{
+    email?: boolean;
+    password?: boolean;
+  }>({});
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email) return 'El correo electrónico es requerido';
-    if (!emailRegex.test(email)) return 'Ingresa un correo electrónico válido';
-    return '';
+    if (!email) return "El correo electrónico es requerido";
+    if (!emailRegex.test(email)) return "Ingresa un correo electrónico válido";
+    return "";
   };
 
   const validatePassword = (password: string) => {
-    if (!password) return 'La contraseña es requerida';
-    return '';
+    if (!password) return "La contraseña es requerida";
+    return "";
   };
 
-  const handleBlur = (field: 'email' | 'password') => {
+  const handleBlur = (field: "email" | "password") => {
     setTouched({ ...touched, [field]: true });
-    
-    if (field === 'email') {
+
+    if (field === "email") {
       const error = validateEmail(email);
       setErrors({ ...errors, email: error });
     } else {
@@ -40,16 +56,25 @@ export function LoginForm({ onSwitchToRecover, onLoginSuccess }: LoginFormProps)
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    setIsLoading(true);
-    setErrors({});
+    try {
+      e.preventDefault();
 
-    // Simulación de autenticación - ingreso directo sin validación
-    setTimeout(() => {
-      onLoginSuccess();
+      setIsLoading(true);
+      setErrors({});
+
+      // Simulación de autenticación - ingreso directo sin validación
+      setTimeout(async () => {
+        await login({ email, password });
+        setIsLoading(false);
+        navigate(from, { replace: true });
+      }, 800);
+    } catch (error) {
+      setErrors({
+        general: "Error al iniciar sesión. Por favor, intenta de nuevo.",
+      });
+      console.error("Login error:", error);
       setIsLoading(false);
-    }, 800);
+    }
   };
 
   return (
@@ -70,7 +95,10 @@ export function LoginForm({ onSwitchToRecover, onLoginSuccess }: LoginFormProps)
 
         {/* Campo Email */}
         <div>
-          <label htmlFor="email" className="block mb-2 text-[var(--color-text)]">
+          <label
+            htmlFor="email"
+            className="block mb-2 text-[var(--color-text)]"
+          >
             Correo electrónico
           </label>
           <div className="relative">
@@ -84,16 +112,20 @@ export function LoginForm({ onSwitchToRecover, onLoginSuccess }: LoginFormProps)
               onChange={(e) => {
                 setEmail(e.target.value);
                 if (touched.email) {
-                  setErrors({ ...errors, email: validateEmail(e.target.value) });
+                  setErrors({
+                    ...errors,
+                    email: validateEmail(e.target.value),
+                  });
                 }
               }}
-              onBlur={() => handleBlur('email')}
+              onBlur={() => handleBlur("email")}
               placeholder="ejemplo@bioplasma.com"
               disabled={isLoading}
               className={`w-full pl-12 pr-4 py-3 rounded-lg border transition-all duration-200 outline-none
-                ${errors.email && touched.email 
-                  ? 'border-[var(--color-error)] focus:border-[var(--color-error)] focus:shadow-[0_0_0_3px_rgba(198,123,123,0.1)]' 
-                  : 'border-[var(--color-border)] focus:border-[var(--color-primary)] focus:shadow-[0_0_0_3px_rgba(139,115,85,0.1)]'
+                ${
+                  errors.email && touched.email
+                    ? "border-[var(--color-error)] focus:border-[var(--color-error)] focus:shadow-[0_0_0_3px_rgba(198,123,123,0.1)]"
+                    : "border-[var(--color-border)] focus:border-[var(--color-primary)] focus:shadow-[0_0_0_3px_rgba(139,115,85,0.1)]"
                 }
                 disabled:bg-gray-50 disabled:cursor-not-allowed
               `}
@@ -106,7 +138,10 @@ export function LoginForm({ onSwitchToRecover, onLoginSuccess }: LoginFormProps)
 
         {/* Campo Password */}
         <div>
-          <label htmlFor="password" className="block mb-2 text-[var(--color-text)]">
+          <label
+            htmlFor="password"
+            className="block mb-2 text-[var(--color-text)]"
+          >
             Contraseña
           </label>
           <div className="relative">
@@ -115,21 +150,25 @@ export function LoginForm({ onSwitchToRecover, onLoginSuccess }: LoginFormProps)
             </div>
             <input
               id="password"
-              type={showPassword ? 'text' : 'password'}
+              type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
                 if (touched.password) {
-                  setErrors({ ...errors, password: validatePassword(e.target.value) });
+                  setErrors({
+                    ...errors,
+                    password: validatePassword(e.target.value),
+                  });
                 }
               }}
-              onBlur={() => handleBlur('password')}
+              onBlur={() => handleBlur("password")}
               placeholder="••••••••"
               disabled={isLoading}
               className={`w-full pl-12 pr-12 py-3 rounded-lg border transition-all duration-200 outline-none
-                ${errors.password && touched.password
-                  ? 'border-[var(--color-error)] focus:border-[var(--color-error)] focus:shadow-[0_0_0_3px_rgba(198,123,123,0.1)]' 
-                  : 'border-[var(--color-border)] focus:border-[var(--color-primary)] focus:shadow-[0_0_0_3px_rgba(139,115,85,0.1)]'
+                ${
+                  errors.password && touched.password
+                    ? "border-[var(--color-error)] focus:border-[var(--color-error)] focus:shadow-[0_0_0_3px_rgba(198,123,123,0.1)]"
+                    : "border-[var(--color-border)] focus:border-[var(--color-primary)] focus:shadow-[0_0_0_3px_rgba(139,115,85,0.1)]"
                 }
                 disabled:bg-gray-50 disabled:cursor-not-allowed
               `}
@@ -140,7 +179,11 @@ export function LoginForm({ onSwitchToRecover, onLoginSuccess }: LoginFormProps)
               className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors"
               disabled={isLoading}
             >
-              {showPassword ? <EyeOff size={20} strokeWidth={1.5} /> : <Eye size={20} strokeWidth={1.5} />}
+              {showPassword ? (
+                <EyeOff size={20} strokeWidth={1.5} />
+              ) : (
+                <Eye size={20} strokeWidth={1.5} />
+              )}
             </button>
           </div>
           {errors.password && touched.password && (
@@ -162,7 +205,7 @@ export function LoginForm({ onSwitchToRecover, onLoginSuccess }: LoginFormProps)
               Recordar mi sesión
             </span>
           </label>
-          
+
           <button
             type="button"
             onClick={onSwitchToRecover}
@@ -185,7 +228,7 @@ export function LoginForm({ onSwitchToRecover, onLoginSuccess }: LoginFormProps)
               Ingresando...
             </>
           ) : (
-            'Iniciar Sesión'
+            "Iniciar Sesión"
           )}
         </button>
 
@@ -200,13 +243,20 @@ export function LoginForm({ onSwitchToRecover, onLoginSuccess }: LoginFormProps)
         </div>
       </form>
 
-      <style jsx>{`
+      <style>{`
         @keyframes shake {
-          0%, 100% { transform: translateX(0); }
-          25% { transform: translateX(-10px); }
-          75% { transform: translateX(10px); }
+          0%,
+          100% {
+            transform: translateX(0);
+          }
+          25% {
+            transform: translateX(-10px);
+          }
+          75% {
+            transform: translateX(10px);
+          }
         }
-        
+
         .shake {
           animation: shake 0.3s ease-in-out;
         }
