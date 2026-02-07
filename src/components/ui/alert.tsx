@@ -1,5 +1,5 @@
 import * as React from "react";
-import { cva, type VariantProps } from "class-variance-authority@0.7.1";
+import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "./utils";
 
@@ -63,4 +63,52 @@ function AlertDescription({
   );
 }
 
-export { Alert, AlertTitle, AlertDescription };
+const AlertMessage = (
+  props: React.ComponentProps<"div"> & {
+    type?: "success" | "warning" | "error" | "info";
+    title?: string;
+    message: string;
+  },
+) => {
+  const classNamesAlertType = {
+    success: "bg-green-100 text-green-800",
+    warning: "bg-amber-100 text-[var(--color-warning)]",
+    error: " bg-red-100 text-[var(--color-error)]",
+    info: " bg-blue-100 text-blue-800",
+  };
+
+  const stylesAlert = classNamesAlertType[props.type || "info"];
+
+  return (
+    <div className={"rounded-lg border px-4 py-3" + stylesAlert}>
+      <div>
+        {props.title && <strong>{props.title}</strong>}
+        <p style={{ fontSize: "14px" }}>{props.message || ""}</p>
+      </div>
+    </div>
+  );
+};
+
+const AlertErrorInput = (
+  props: React.ComponentProps<"div"> & {
+    type?: "error" | "success";
+    message: string;
+  },
+) => {
+  const classNamesAlertType = {
+    success: "bg-green-100 text-green-800",
+    error: "bg-red-100 border-[var(--color-error)] text-[var(--color-error)]",
+  };
+
+  const stylesAlert = classNamesAlertType[props.type || "error"];
+
+  return (
+    <div className={`rounded-lg  px-3 py-1 mt-1 ${stylesAlert}`}>
+      <div>
+        <strong style={{ fontSize: "14px" }}>{props.message || ""}</strong>
+      </div>
+    </div>
+  );
+};
+
+export { Alert, AlertTitle, AlertDescription, AlertMessage, AlertErrorInput };
