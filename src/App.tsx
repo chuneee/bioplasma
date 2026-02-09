@@ -11,7 +11,6 @@ import { LoginPage } from "./modules/auth/pages/LoginPage";
 // Pages
 import { Dashboard } from "./modules/dashboard/pages/Dashboard";
 import { Pacientes } from "./modules/patients/pages/Pacientes";
-import { ExpedientePaciente } from "./modules/patients/components/ExpedientePaciente";
 import { Agenda } from "./modules/appointments/pages/Agenda";
 import { Servicios } from "./modules/services/pages/Servicios";
 import { Inventario } from "./modules/inventory/pages/Inventario";
@@ -47,7 +46,7 @@ export default function App() {
           <Route element={<DashboardLayoutWrapper />}>
             {/* Dashboard */}
             <Route element={<AuthorizedRoute view="dashboard" />}>
-              <Route path="/dashboard" element={<Dashboard userName="" />} />
+              <Route path="/dashboard" element={<Dashboard />} />
             </Route>
 
             {/* Pacientes */}

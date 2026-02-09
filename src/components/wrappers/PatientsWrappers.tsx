@@ -2,7 +2,7 @@
 import { useParams, Navigate } from "react-router-dom";
 import { useNavigation } from "../../hooks/useNavigation";
 import { Pacientes } from "../../modules/patients/pages/Pacientes";
-import { ExpedientePaciente } from "../../modules/patients/components/ExpedientePaciente";
+import { ExpedientePaciente } from "../../modules/patients/pages/ExpedientePaciente";
 
 // Wrapper para la página de lista de pacientes
 export function PacientesPageWrapper() {
@@ -20,6 +20,5 @@ export function ExpedientePacientePageWrapper() {
   if (!id) {
     return <Navigate to="/pacientes" replace />;
   }
-
   return <ExpedientePaciente pacienteId={id} onBack={goBack} />;
 }
