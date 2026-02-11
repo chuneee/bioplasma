@@ -10,10 +10,8 @@ import { LoginPage } from "./modules/auth/pages/LoginPage";
 
 // Pages
 import { Dashboard } from "./modules/dashboard/pages/Dashboard";
-import { Pacientes } from "./modules/patients/pages/Pacientes";
 import { Agenda } from "./modules/appointments/pages/Agenda";
 import { Servicios } from "./modules/services/pages/Servicios";
-import { Inventario } from "./modules/inventory/pages/Inventario";
 import { Cotizaciones } from "./modules/quotation/pages/Cotizaciones";
 import { Ventas } from "./modules/sales/pages/Ventas";
 import { Finanzas } from "./modules/finance/pages/Finanzas";
@@ -26,6 +24,12 @@ import {
   PacientesPageWrapper,
   ExpedientePacientePageWrapper,
 } from "./components/wrappers/PatientsWrappers";
+
+import {
+  InventoryPageWrapper,
+  DetalleProductoPageWrapper,
+} from "./components/wrappers/ProductsWrappers";
+
 import { DashboardLayoutWrapper } from "./components/wrappers/DashboardLayoutWrapper";
 import { ProtectedRoute } from "./guards/ProtectedRoute";
 import { AuthorizedRoute } from "./guards/AuthorizedRoute";
@@ -70,7 +74,11 @@ export default function App() {
 
             {/* Inventario - Solo Admin */}
             <Route element={<AuthorizedRoute view="inventario" />}>
-              <Route path="/inventario" element={<Inventario />} />
+              <Route path="/inventario" element={<InventoryPageWrapper />} />
+              <Route
+                path="/inventario/:id"
+                element={<DetalleProductoPageWrapper />}
+              />
             </Route>
 
             {/* Cotizaciones */}

@@ -42,6 +42,12 @@ export function useNavigation() {
     },
     [navigate],
   );
+  const navigateToProducto = useCallback(
+    (productoId: string) => {
+      navigate(`/inventario/${productoId}`);
+    },
+    [navigate],
+  );
 
   return {
     currentView,
@@ -49,6 +55,7 @@ export function useNavigation() {
     goBack,
     isActive,
     navigateToPaciente,
+    navigateToProducto,
     location,
     navigate,
   };

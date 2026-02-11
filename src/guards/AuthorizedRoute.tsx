@@ -16,7 +16,6 @@ export function AuthorizedRoute({ view }: AuthorizedRouteProps) {
     console.warn(
       `Usuario ${authUser?.username} sin acceso a la vista: ${view}`,
     );
-    // Redirigir al dashboard si no tiene permisos
     return <Navigate to="/dashboard" replace />;
   }
 
