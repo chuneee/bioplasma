@@ -269,6 +269,16 @@ export function DetalleProducto({ productoId, onBack }: DetalleProductoProps) {
                   {formatCurrency((costUnit || 0) * (stockInfo?.quantity || 0))}
                 </span>
               </div>
+              <div className="flex justify-between items-center">
+                <span className="text-[var(--color-text-secondary)] text-xs uppercase tracking-wide">
+                  Pago a Proveedor
+                </span>
+                <span
+                  className={`mt-2 text-[var(--color-secondary)] font-bold text-lg ${stockInfo?.paymentStatus === "PAGADO" ? "text-green-600" : "text-red-600"}`}
+                >
+                  {stockInfo?.paymentStatus || "N/A"}
+                </span>
+              </div>
             </div>
           </div>
         </div>

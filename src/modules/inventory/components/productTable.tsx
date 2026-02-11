@@ -146,6 +146,12 @@ export const ProductTable = ({
                 className="text-center px-6 py-4 text-[var(--color-text-secondary)] uppercase tracking-wide"
                 style={{ fontSize: "12px", fontWeight: 600 }}
               >
+                Pago a Proveedor
+              </th>
+              <th
+                className="text-center px-6 py-4 text-[var(--color-text-secondary)] uppercase tracking-wide"
+                style={{ fontSize: "12px", fontWeight: 600 }}
+              >
                 Acciones
               </th>
             </tr>
@@ -304,6 +310,22 @@ export const ProductTable = ({
                       }}
                     >
                       {estado?.label || "Desconocido"}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-center">
+                    <span
+                      className="inline-flex px-3 py-1 rounded-full"
+                      style={{
+                        fontSize: "12px",
+                        fontWeight: 500,
+
+                        color:
+                          producto.stockInfo.paymentStatus === "PAGADO"
+                            ? "#7DB07D"
+                            : "#E0A75E",
+                      }}
+                    >
+                      {producto.stockInfo.paymentStatus}
                     </span>
                   </td>
                   <td className="px-6 py-4">
