@@ -287,6 +287,7 @@ export const ProductFormModal = ({
                   <option value="sobres">Sobres</option>
                   <option value="ampolletas">Ampolletas</option>
                   <option value="frascos">Frascos</option>
+                  <option value="kits">Kits</option>
                 </select>
                 {errors.unit && (
                   <AlertErrorInput

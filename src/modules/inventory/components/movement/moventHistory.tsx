@@ -127,13 +127,14 @@ export const MovementHistory = ({ productId }: MovementHistoryProps) => {
               <div>
                 <p className="text-[var(--color-text-secondary)] text-xs uppercase tracking-wide font-semibold">
                   Cantidad
-                </p>
+                </p>{" "}
                 <p className="text-[var(--color-text)] font-semibold">
-                  {movement.quantity > 0
+                  {" "}
+                  {movement.type === "ENTRADA" && movement.quantity > 0
                     ? `+${movement.quantity}`
                     : movement.quantity}{" "}
-                  unidades
-                </p>
+                  unidades{" "}
+                </p>{" "}
               </div>
             </div>
 

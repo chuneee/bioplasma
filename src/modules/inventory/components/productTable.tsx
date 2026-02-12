@@ -45,7 +45,8 @@ export const ProductTable = ({
 
   const getRowBackgroundClass = (producto: Product) => {
     if (producto.stockInfo.quantity <= 0) return "bg-red-50";
-    if (producto.stockInfo.quantity >= producto.stockMin) return "bg-amber-50";
+    if (Number(producto.stockInfo.quantity) <= Number(producto.stockMin))
+      return "bg-amber-50";
     return "";
   };
 
@@ -178,7 +179,7 @@ export const ProductTable = ({
                     onNavigateTo(producto.id);
                   }}
                   className={`border-b border-[var(--color-border)] hover:bg-[#FDFBF9] transition-colors ${getRowBackgroundClass(producto)} ${
-                    status === "por-caducar"
+                    ["agotado", "por-caducar"].includes(status)
                       ? "border-l-4 border-l-red-500"
                       : ""
                   }`}
@@ -345,7 +346,10 @@ export const ProductTable = ({
                         {activeMenu === producto.id && (
                           <div className="absolute right-0 top-full mt-1 w-40 bg-white rounded-lg shadow-lg border border-[var(--color-border)] py-1 z-50">
                             <button
-                              onClick={() => handleEditClick(producto.id)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleEditClick(producto.id);
+                              }}
                               className="w-full px-4 py-2 text-left hover:bg-[#F5F2EF] flex items-center gap-2"
                             >
                               <Edit size={14} />
@@ -354,7 +358,10 @@ export const ProductTable = ({
 
                             {hasPermission("product.delete") && (
                               <button
-                                onClick={() => handleDeleteClick(producto.id)}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDeleteClick(producto.id);
+                                }}
                                 className="w-full px-4 py-2 text-left hover:bg-[#F5F2EF] flex items-center gap-2 text-[var(--color-error)]"
                               >
                                 <Trash2 size={14} />

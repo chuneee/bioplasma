@@ -203,6 +203,13 @@ export const ProductMovimentFormModal = ({
                     value: 1,
                     message: "La cantidad debe ser mayor a 0",
                   },
+                  max: {
+                    value:
+                      tipoMovimiento === "SALIDA" && selectedProduct
+                        ? Number(selectedProduct.stockInfo.quantity)
+                        : 1,
+                    message: "La cantidad no puede ser mayor al stock actual",
+                  },
                 })}
                 type="number"
                 min="0"
