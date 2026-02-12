@@ -8,6 +8,7 @@ import {
 } from "../types/auth.type";
 import { AuthService } from "../services/auth.service";
 import { isTokenExpired, getTimeUntilExpiration } from "../utils/token.utils";
+import { message } from "../../../components/shared/message/message";
 
 export const AuthContext = createContext<AuthContextType>(
   {} as AuthContextType,
@@ -103,6 +104,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       localStorage.removeItem("token");
       localStorage.removeItem("user");
+      message.success("Has cerrado sesión exitosamente.");
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -123,6 +125,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     if (timeLeft <= 0) {
       logout();
+      message.info("Tu sesión ha expirado por inactividad.");
       return;
     }
 
@@ -135,6 +138,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     logoutTimer.current = setTimeout(() => {
       logout();
+      setShowSessionWarning(false); // 🔥 UI
+      message.info("Tu sesión ha expirado por inactividad.");
     }, timeLeft);
   };
 
