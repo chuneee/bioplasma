@@ -48,6 +48,7 @@ const MessageItem = ({ type, text }: { type: string; text: string }) => {
     <div
       style={{
         display: "flex",
+        flexDirection: "column",
         gap: 10,
         fontSize: 14,
         backgroundColor: bgColor,
@@ -56,7 +57,7 @@ const MessageItem = ({ type, text }: { type: string; text: string }) => {
       }}
       className="p-3 bg-[var(--color-bg)] rounded shadow-md border border-[var(--color-border)] items-center"
     >
-      <Icon size={20} />
+      <Icon size={30} />
       <span style={{ display: "block", color: textColor }}>{text}</span>
     </div>
   );
