@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { Appointment } from "../types/appoiment.type";
-import { X } from "lucide-react";
+import { Calendar, Clock, X } from "lucide-react";
 import DatePicker from "react-datepicker";
 import { AlertErrorInput } from "../../../components/ui/alert";
 import { useEffect, useMemo, useState } from "react";
@@ -8,6 +8,17 @@ import dayjs from "dayjs";
 import { ClinicBusinessHour } from "../../settings/types/clinic_business_hour.type";
 import { ClinicService } from "../../settings/services/clinic.service";
 import { message } from "../../../components/shared/message/message";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import isBetween from "dayjs/plugin/isBetween";
+import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
+import { estadosConfig } from "../utils/utils";
+
+// Extender dayjs con plugins
+dayjs.extend(customParseFormat);
+dayjs.extend(isBetween);
+dayjs.extend(isSameOrAfter);
+dayjs.extend(isSameOrBefore);
 
 interface ReagendarModalProps {
   open: boolean;
@@ -257,6 +268,8 @@ export const ReagendarModal = ({
     setValue("start_time", timeString);
   };
 
+  const estado = estadosConfig[currentAppointment.status];
+
   if (!open) return null;
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -275,28 +288,78 @@ export const ReagendarModal = ({
               <X size={24} />
             </button>
           </div>
+          <div
+            key={currentAppointment.id}
+            className="p-4 border border-[var(--color-border)] rounded-lg cursor-pointer hover:bg-[#F5F2EF] transition-colors"
+            style={{
+              borderLeft: `4px solid ${estado.color}`,
+            }}
+          >
+            <div className="flex justify-between items-start">
+              <div>
+                <div className="font-semibold">
+                  {currentAppointment.patient?.fullName}
+                </div>
+                <div className="text-sm text-[var(--color-text-secondary)]">
+                  {currentAppointment.service?.name}
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-sm font-medium">
+                  {dayjs(currentAppointment.date)
+                    .locale("es")
+                    .format("dddd, DD/MMM/YYYY")}
+                </div>
+                <div className="flex items-center gap-2 justify-end text-sm text-[var(--color-text-secondary)]">
+                  <span className="inline-flex items-center gap-1">
+                    <Clock size={16} />
+                  </span>
+                  {dayjs(
+                    `${currentAppointment.date} ${currentAppointment.start_time}`,
+                    "YYYY-MM-DD HH:mm",
+                  ).format("HH:mm")}
+                </div>
+              </div>
+            </div>
+            <div className="mt-2">
+              <span
+                className="inline-block px-2 py-1 rounded-full text-xs"
+                style={{
+                  backgroundColor: estado.bgColor,
+                  color: estado.color,
+                }}
+              >
+                {estado.label}
+              </span>
+            </div>
+          </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block mb-2" style={{ fontWeight: 600 }}>
                 Fecha *
               </label>
-              <DatePicker
-                locale="es"
-                selected={selectedDate}
-                onChange={(date: Date | null) => handleDateChange(date)}
-                filterDate={(date) => {
-                  const day = dayjs(date).day();
-                  const businessHour = clinicBusinessHours.find(
-                    (bh) => bh.day_of_week === day,
-                  );
-                  return businessHour ? !businessHour.is_closed : false;
-                }}
-                minDate={new Date()}
-                dateFormat="dd/MM/yyyy"
-                placeholderText="Selecciona una fecha"
-                className="w-full px-4 py-2.5 border border-[var(--color-border)] rounded-lg focus:outline-none focus:border-[var(--color-primary)]"
-              />
+              <div className="relative z-10">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-secondary)]">
+                  <Calendar size={16} />
+                </span>
+                <DatePicker
+                  locale="es"
+                  selected={selectedDate}
+                  onChange={(date: Date | null) => handleDateChange(date)}
+                  filterDate={(date) => {
+                    const day = dayjs(date).day();
+                    const businessHour = clinicBusinessHours.find(
+                      (bh) => bh.day_of_week === day,
+                    );
+                    return businessHour ? !businessHour.is_closed : false;
+                  }}
+                  minDate={new Date()}
+                  dateFormat="dd/MM/yyyy"
+                  placeholderText="Selecciona una fecha"
+                  className="w-full px-4 py-2.5 pl-8 border border-[var(--color-border)] rounded-lg focus:outline-none focus:border-[var(--color-primary)]"
+                />
+              </div>
               <input
                 type="hidden"
                 {...register("date", {
@@ -313,27 +376,32 @@ export const ReagendarModal = ({
               <label className="block mb-2" style={{ fontWeight: 600 }}>
                 Hora de Inicio *
               </label>
-              <DatePicker
-                locale="es"
-                selected={selectedTime}
-                onChange={(time: Date | null) => handleTimeChange(time)}
-                showTimeSelect
-                showTimeSelectOnly
-                minTime={minTime}
-                maxTime={maxTime}
-                timeIntervals={30}
-                dateFormat="HH:mm"
-                timeFormat="HH:mm"
-                placeholderText={
-                  !selectedDate
-                    ? "Primero selecciona una fecha"
-                    : !minTime || !maxTime
-                      ? "No hay horarios disponibles"
-                      : "Selecciona una hora"
-                }
-                disabled={!selectedDate || !minTime || !maxTime}
-                className="w-full px-4 py-2.5 border border-[var(--color-border)] rounded-lg focus:outline-none focus:border-[var(--color-primary)] disabled:bg-gray-100 disabled:cursor-not-allowed"
-              />
+              <div className="relative z-10">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-secondary)]">
+                  <Clock size={16} />
+                </span>
+                <DatePicker
+                  locale="es"
+                  selected={selectedTime}
+                  onChange={(time: Date | null) => handleTimeChange(time)}
+                  showTimeSelect
+                  showTimeSelectOnly
+                  minTime={minTime}
+                  maxTime={maxTime}
+                  timeIntervals={30}
+                  dateFormat="HH:mm"
+                  timeFormat="HH:mm"
+                  placeholderText={
+                    !selectedDate
+                      ? "Primero selecciona una fecha"
+                      : !minTime || !maxTime
+                        ? "No hay horarios disponibles"
+                        : "Selecciona una hora"
+                  }
+                  disabled={!selectedDate || !minTime || !maxTime}
+                  className="w-full px-4 py-2.5 pl-8 border border-[var(--color-border)] rounded-lg focus:outline-none focus:border-[var(--color-primary)] disabled:bg-gray-100 disabled:cursor-not-allowed"
+                />
+              </div>
               <input
                 type="hidden"
                 {...register("start_time", {

@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useMemo, useCallback, memo } from "react";
-import { Cita, getWeekDays, ViewMode } from "../utils/utils";
+import { useEffect, useState, useMemo, useCallback } from "react";
+import { getWeekDays, ViewMode } from "../utils/utils";
 import { AgendaVistaDia } from "./agendaVistaDia";
 import { AgendaVistaSemana } from "./agendaVistaSemana";
 import { ChevronLeft, ChevronRight, Search } from "lucide-react";

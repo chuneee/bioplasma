@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { Patient } from "../types/patient.type";
 import { AlertErrorInput } from "../../../components/ui/alert";
 import { useEffect } from "react";
+import { Percent, Pointer } from "lucide-react";
 
 interface PatientFormModalProps {
   onClose?: () => void;
@@ -17,10 +18,10 @@ export const PatientFormModal = ({
   currentPatient,
 }: PatientFormModalProps) => {
   if (!open) return null;
-
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting },
     reset,
   } = useForm<Partial<Patient>>();
@@ -33,6 +34,7 @@ export const PatientFormModal = ({
   const handleFormSubmit = (data: Partial<Patient>) => {
     onSubmit?.(data);
   };
+
   useEffect(() => {
     if (currentPatient) {
       reset({
@@ -46,6 +48,8 @@ export const PatientFormModal = ({
         neighborhood: currentPatient.neighborhood,
         city: currentPatient.city,
         zipCode: currentPatient.zipCode,
+        isRecurrent: currentPatient.isRecurrent,
+        porcentDiscount: currentPatient.porcentDiscount,
         medicalInfo: {
           allergies: currentPatient.medicalInfo?.allergies || "",
           medicalConditions:
@@ -58,6 +62,8 @@ export const PatientFormModal = ({
       reset();
     }
   }, [currentPatient]);
+
+  const isRecurrent = watch("isRecurrent");
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -210,6 +216,44 @@ export const PatientFormModal = ({
                 {errors.email && (
                   <AlertErrorInput message={errors.email.message as string} />
                 )}
+              </div>
+              <div className="flex  flex-col gap-2 sm:flex-row sm:items-center sm:justify-between ">
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <div style={{ fontWeight: 600 }}>
+                      ¿Es cliente recurrente?
+                    </div>
+                    <div
+                      className="text-[var(--color-text-secondary)]"
+                      style={{ fontSize: "14px" }}
+                      hidden={!isRecurrent}
+                    >
+                      Descuentos especial.
+                    </div>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      {...register("isRecurrent")}
+                      type="checkbox"
+                      className="sr-only peer"
+                      defaultChecked={false}
+                    />
+                    <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--color-success)]"></div>
+                  </label>
+                </div>
+                <div className="relative" hidden={!isRecurrent}>
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-secondary]">
+                    %
+                  </span>
+                  <input
+                    {...register("porcentDiscount")}
+                    type="number"
+                    min={0}
+                    max={100}
+                    defaultValue={0}
+                    className=" pl-8 pr-4 py-2.5 border border-[var(--color-border)] rounded-lg focus:outline-none focus:border-[var(--color-primary)]"
+                  />
+                </div>
               </div>
             </div>
           </div>

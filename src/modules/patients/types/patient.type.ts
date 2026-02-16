@@ -17,4 +17,6 @@ export type Patient = {
   createdAt: string;
   updatedAt: string;
   medicalInfo: PatientMedicalInfo;
+  isRecurrent: boolean;
+  porcentDiscount: number;
 };
