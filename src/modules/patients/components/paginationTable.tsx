@@ -1,5 +1,4 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useState } from "react";
 
 interface PaginationTableProps {
   onChangePage: (page: number) => void;
@@ -104,7 +103,7 @@ export const PaginationTable = ({
   return (
     <div className="flex items-center justify-between px-6 py-4 border-t border-[var(--color-border)]">
       <div className="text-[var(--color-text-secondary)]">
-        Mostrando {startItem}-{endItem} de {totalItems} pacientes
+        Mostrando {startItem}-{endItem} de {totalItems} registros
       </div>
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2">
