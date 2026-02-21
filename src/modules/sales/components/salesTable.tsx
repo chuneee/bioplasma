@@ -333,9 +333,7 @@ export const SaleTable = ({
                       >
                         <MessageCircle size={16} />
                       </button>
-                      {[SaleStatus.GUARDADA, SaleStatus.CONCRETADA].includes(
-                        venta.status,
-                      ) && (
+                      {![SaleStatus.CONCRETADA].includes(venta.status) && (
                         <div className="relative">
                           <button
                             type="button"

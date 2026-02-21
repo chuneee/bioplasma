@@ -68,6 +68,10 @@ export const SaleForm = ({ open, onClose, onSubmit }: SaleFormProps) => {
   const [showDropdownPaciente, setShowDropdownPaciente] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  const [initialStatus, setInitialStatus] = useState<SaleStatus>(
+    SaleStatus.GUARDADA,
+  );
+
   const initializeData = async () => {
     try {
       const [pacientesData, serviciosData, productosData, paymentMethodsData] =
@@ -960,6 +964,7 @@ export const SaleForm = ({ open, onClose, onSubmit }: SaleFormProps) => {
     onSubmit &&
       onSubmit({
         ...credencialData,
+        status: initialStatus,
       } as Partial<Sale>);
 
     return;
@@ -1283,12 +1288,14 @@ export const SaleForm = ({ open, onClose, onSubmit }: SaleFormProps) => {
             Cancelar
           </button>
           <button
+            onClick={() => setInitialStatus(SaleStatus.GUARDADA)}
             type="submit"
             className="px-6 py-2.5 border border-[var(--color-primary)] text-[var(--color-primary)] rounded-lg hover:bg-[#8B7355]/10 transition-colors"
           >
             Guardar e Imprimir
           </button>
           <button
+            onClick={() => setInitialStatus(SaleStatus.CONCRETADA)}
             type="submit"
             className="px-6 py-2.5 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[#7A6349] transition-colors"
           >
