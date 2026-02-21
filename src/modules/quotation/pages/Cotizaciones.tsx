@@ -10,6 +10,9 @@ import { QuotationService } from "../services/quotation.service";
 import { message } from "../../../components/shared/message/message";
 import { QuotationSummary } from "../types/quotation-sumary.type";
 import { QuotationDetail } from "../components/quotationDetail";
+import { SaleFromQuote } from "../../sales/types/sale-from-quote.type";
+import { SaleService } from "../../sales/services/sale.service";
+import { set } from "react-hook-form";
 
 export function Cotizaciones() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -101,6 +104,28 @@ export function Cotizaciones() {
       setShowNewCotizacionModal(false);
       setSelectedCotizacion(null);
       setIsCopying(false);
+    }
+  };
+
+  const onConvertirVenta = async (data: Partial<SaleFromQuote>) => {
+    try {
+      const response = await SaleService.createSaleFromQuote(data);
+      setCotizaciones((prev) =>
+        prev.map((cot) =>
+          cot.id === data.quoteId
+            ? { ...cot, status: QuotationStatus.CERRADA }
+            : cot,
+        ),
+      );
+      message.success("Cotización convertida a venta exitosamente");
+    } catch (error) {
+      console.error("Error al convertir cotización a venta:", error);
+      message.error(
+        "Hubo un error al convertir la cotización a venta. Por favor, intenta de nuevo.",
+      );
+    } finally {
+      setShowConvertirVentaModal(false);
+      setSelectedCotizacion(null);
     }
   };
 
@@ -338,9 +363,9 @@ export function Cotizaciones() {
       {/* Modal: Convertir a Venta */}
       <SaleQuoteModal
         open={showConvertirVentaModal}
-        dataSource={[] as any} // Aquí deberías pasar los datos necesarios para convertir la cotización en venta
+        dataSource={selectedCotizacion} // Aquí deberías pasar los datos necesarios para convertir la cotización en venta
         onClose={() => setShowConvertirVentaModal(false)}
-        onSubmit={(data) => console.log(data)}
+        onSubmit={onConvertirVenta}
       />
 
       <QuotationDetail
